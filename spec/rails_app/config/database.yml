@@ -14,10 +14,10 @@ postgresql: &POSTGRES
   min_messages: ERROR
 
 mysql: &MYSQL
-  adapter: mysql
+  adapter: mysql2
   host: localhost
   username: root
-  password:
+  password: root
   database: audited_test
 
 test:

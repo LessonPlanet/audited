@@ -143,7 +143,7 @@ describe Audited::Auditor, :adapter => :mongo_mapper do
 
       expect {
         user.update_attribute(:name, 'O.J.   Simpson')
-      }.to_not raise_error(BSON::InvalidDocument)
+      }.to_not raise_error
 
       change = user.audits.all.last.audited_changes['name']
       change.should be_all{|c| c.is_a?(String) }
@@ -372,7 +372,7 @@ describe Audited::Auditor, :adapter => :mongo_mapper do
 
     it "should record new audit when saving revision" do
       expect {
-        user.revision(1).save!
+        user.revision(1).save!(:safe => false)
       }.to change( user.audits, :count ).by(1)
     end
 

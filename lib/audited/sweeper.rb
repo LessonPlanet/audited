@@ -5,6 +5,8 @@ module Audited
 
     include ActiveModel::Observing
 
+    observe Audited.audit_class
+
     def before(controller)
       self.controller = controller
       true
