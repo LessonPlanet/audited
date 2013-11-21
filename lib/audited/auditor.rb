@@ -66,9 +66,6 @@ module Audited
         end
 
         attr_accessor :audit_comment
-        unless options[:allow_mass_assignment]
-          attr_accessible :audit_comment
-        end
 
         has_many :audits, :as => :auditable, :class_name => Audited.audit_class.name
         Audited.audit_class.audited_class_names << self.to_s

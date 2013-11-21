@@ -17,8 +17,6 @@ module Models
 
       audited :allow_mass_assignment => true, :except => :password
 
-      attr_protected :logins
-
       def name=(val)
         write_attribute(:name, CGI.escapeHTML(val))
       end
@@ -50,7 +48,7 @@ module Models
       timestamps!
 
       audited
-      attr_accessible :name, :username, :password
+      # attr_accessible :name, :username, :password
     end
 
     class AccessibleBeforeDeclarationUser
@@ -64,7 +62,7 @@ module Models
       key :logins, Integer, :default => 0
       timestamps!
 
-      attr_accessible :name, :username, :password # declare attr_accessible before calling aaa
+      # attr_accessible :name, :username, :password # declare attr_accessible before calling aaa
       audited
     end
 
@@ -131,7 +129,7 @@ module Models
       key :owner_id, ObjectId
 
       belongs_to :owner, :class_name => "Owner"
-      attr_accessible :name, :owner # declare attr_accessible before calling aaa
+      # attr_accessible :name, :owner # declare attr_accessible before calling aaa
       audited :associated_with => :owner
     end
 
@@ -202,7 +200,7 @@ module Models
 
       key :name, Name
 
-      attr_accessible :name
+      # attr_accessible :name
 
       audited
     end

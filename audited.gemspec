@@ -12,7 +12,6 @@ Gem::Specification.new do |gem|
   gem.license     = 'MIT'
 
   gem.add_development_dependency 'rails-observers', '~> 0.1.2'
-  gem.add_development_dependency 'protected_attributes', '~> 1.0.5'
   gem.add_development_dependency 'appraisal', '~> 0.4'
   gem.add_development_dependency 'bson_ext', '~> 1.6'
   gem.add_development_dependency 'mongo_mapper', '~> 0.13.0.beta2'
