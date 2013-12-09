@@ -4,7 +4,11 @@ require 'audited/adapters/active_record/audit'
 
 module Audited::Auditor::ClassMethods
   def default_ignored_attributes
-    [self.primary_key, inheritance_column]
+    if ::ActiveRecord::Base.connected?
+      [self.primary_key, inheritance_column]
+    else
+      []
+    end
   end
 end
 
