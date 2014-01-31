@@ -11,10 +11,6 @@ module Models
       end
     end
 
-    class BlankUser < ::ActiveRecord::Base
-      self.table_name = :users
-    end
-
     class CommentRequiredUser < ::ActiveRecord::Base
       self.table_name = :users
       audited :comment_required => true
