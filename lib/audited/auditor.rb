@@ -47,17 +47,13 @@ module Audited
         # don't allow multiple calls
         return if self.included_modules.include?(Audited::Auditor::AuditedInstanceMethods)
 
-        class_attribute :non_audited_columns,   :instance_writer => false
+        options = { :protect => accessible_attributes.blank? }.merge(options)
+
+        class_attribute :audit_options,         :instance_writer => false
         class_attribute :auditing_enabled,      :instance_writer => false
         class_attribute :audit_associated_with, :instance_writer => false
 
-        if options[:only]
-          except = self.column_names - options[:only].flatten.map(&:to_s)
-        else
-          except = default_ignored_attributes + Audited.ignored_attributes
-          except |= Array(options[:except]).collect(&:to_s) if options[:except]
-        end
-        self.non_audited_columns = except
+        self.audit_options = options
         self.audit_associated_with = options[:associated_with]
 
         if options[:comment_required]
@@ -66,8 +62,12 @@ module Audited
         end
 
         attr_accessor :audit_comment
+        unless accessible_attributes.blank? || options[:protect]
+          attr_accessible :audit_comment
+        end
 
         has_many :audits, :as => :auditable, :class_name => Audited.audit_class.name
+        attr_protected :audit_ids if options[:protect]
         Audited.audit_class.audited_class_names << self.to_s
 
         after_create  :audit_create if !options[:on] || (options[:on] && options[:on].include?(:create))
@@ -87,12 +87,28 @@ module Audited
         self.auditing_enabled = true
       end
 
+      def non_audited_columns
+        @non_audited_columns ||= begin
+           if self.audit_options[:only]
+             except = self.column_names - self.audit_options[:only].flatten.map(&:to_s)
+           else
+             except = default_ignored_attributes + Audited.ignored_attributes
+             except |= Array(self.audit_options[:except]).collect(&:to_s) if self.audit_options[:except]
+           end
+          except
+        end
+      end
+
       def has_associated_audits
         has_many :associated_audits, :as => :associated, :class_name => Audited.audit_class.name
       end
     end
 
     module AuditedInstanceMethods
+      def non_audited_columns
+        self.class.non_audited_columns
+      end
+
       # Temporarily turns off auditing while saving.
       def save_without_auditing
         without_auditing { save }
